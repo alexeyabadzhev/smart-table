@@ -16,8 +16,27 @@ export function initTable(settings, onAction) {
     // @todo: #1.3 —  обработать события и вызвать onAction()
 
     const render = (data) => {
+        //console.log(data)
         // @todo: #1.1 — преобразовать данные в массив строк на основе шаблона rowTemplate
-        const nextRows = [];
+        
+        const nextRows = data.map(item => {
+            const row = cloneTemplate(rowTemplate);
+            //console.log(row)
+            Object.keys(item).forEach(key => {
+                Object.keys(row.elements).forEach(rowKey => {
+                    //console.log(key, rowKey)
+                    //console.log(item[key], row.elements[rowKey])
+                    if (key === rowKey && Object.hasOwn(row.elements, key)) {
+                    row.elements[rowKey].textContent = item[key];
+                    }
+                
+                })
+                
+            })
+            console.log(row.elements['seller'])
+        
+        });
+        console.log(nextRows)
         root.elements.rows.replaceChildren(...nextRows);
     }
 
