@@ -21,6 +21,7 @@ export function initTable(settings, onAction) {
         
         const nextRows = data.map(item => {
             const row = cloneTemplate(rowTemplate);
+            //console.log(cloneTemplate(rowTemplate))
             //console.log(row)
             Object.keys(item).forEach(key => {
                 Object.keys(row.elements).forEach(rowKey => {
@@ -33,10 +34,12 @@ export function initTable(settings, onAction) {
                 })
                 
             })
-            console.log(row.elements['seller'])
+            
+            //console.log(row.elements['seller'])
+            return row.container
         
         });
-        console.log(nextRows)
+        
         root.elements.rows.replaceChildren(...nextRows);
     }
 
