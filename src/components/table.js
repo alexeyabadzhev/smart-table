@@ -12,8 +12,27 @@ export function initTable(settings, onAction) {
     const root = cloneTemplate(tableTemplate);
 
     // @todo: #1.2 —  вывести дополнительные шаблоны до и после таблицы
+    //console.log(before, after, root)
+    before.reverse().forEach(item => {
+        root[item] = cloneTemplate(item);
+        root.container.prepend(root[item].container);
+    })
 
+    after.forEach(item => {
+        root[item] = cloneTemplate(item);
+        root.container.append(root[item].container);
+    })
     // @todo: #1.3 —  обработать события и вызвать onAction()
+    root.container.addEventListener('change', () => {
+        onAction();
+    })
+    root.container.addEventListener('reset', () => {
+        setTimeout(onAction);
+    })
+    root.container.addEventListener('submit', (e) => {
+        e.preventDefault();
+        onAction(e.submitter);
+    })
 
     const render = (data) => {
         //console.log(data)
@@ -24,19 +43,14 @@ export function initTable(settings, onAction) {
             //console.log(cloneTemplate(rowTemplate))
             //console.log(row)
             Object.keys(item).forEach(key => {
-                Object.keys(row.elements).forEach(rowKey => {
-                    //console.log(key, rowKey)
-                    //console.log(item[key], row.elements[rowKey])
-                    if (key === rowKey && Object.hasOwn(row.elements, key)) {
-                    row.elements[rowKey].textContent = item[key];
-                    }
-                
-                })
-                
+                if (Object.hasOwn(row.elements, key)) {
+                    row.elements[key].textContent = item[key];
+                }
             })
             
+            
             //console.log(row.elements['seller'])
-            return row.container
+            return row.container;
         
         });
         

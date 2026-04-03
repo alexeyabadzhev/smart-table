@@ -8,7 +8,9 @@ import {processFormData} from "./lib/utils.js";
 
 import {initTable} from "./components/table.js";
 // @todo: подключение
-
+import {initPagination} from './components/pagination.js';
+import {initSorting} from './components/sorting.js';
+import {initFiltering} from './components/filtering.js';
 
 // Исходные данные используемые в render()
 const {data, ...indexes} = initData(sourceData);
@@ -20,8 +22,13 @@ const {data, ...indexes} = initData(sourceData);
 function collectState() {
     const state = processFormData(new FormData(sampleTable.container));
 
+    const rowsPerPage = parseInt(state.rowsPerPage);
+    const page = parseInt(state.page ?? 1);
+
     return {
-        ...state
+        ...state,
+        rowsPerPage,
+        page
     };
 }
 
@@ -34,6 +41,10 @@ function render(action) {
     let result = [...data]; // копируем для последующего изменения
     // @todo: использование
 
+    result = applyFiltering(result, state, action);
+    result = applySorting(result, state, action);
+    result = applyPagination(result, state, action);
+
 
     sampleTable.render(result)
 }
@@ -41,11 +52,31 @@ function render(action) {
 const sampleTable = initTable({
     tableTemplate: 'table',
     rowTemplate: 'row',
-    before: [],
-    after: []
+    before: ['header', 'filter'],
+    after: ['pagination']
 }, render);
 
 // @todo: инициализация
+const applyPagination = initPagination(
+    sampleTable.pagination.elements,
+    (el, page, isCurrent) => {
+        const input = el.querySelector('input');
+        const label = el.querySelector('span');
+        input.value = page;
+        input.cheked - isCurrent;
+        label.textContent = page;
+        return el;
+    }
+);
+
+const applySorting = initSorting([
+    sampleTable.header.elements.sortByDate,
+    sampleTable.header.elements.sortByTotal
+])
+
+const applyFiltering = initFiltering(sampleTable.filter.elements, {
+    searchBySeller: indexes.sellers
+});
 
 
 const appRoot = document.querySelector('#app');
