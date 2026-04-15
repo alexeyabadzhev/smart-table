@@ -1,10 +1,4 @@
-//import {createComparison, defaultRules} from "../lib/compare.js";
-
-// @todo: #4.3 — настроить компаратор
-//const compare = createComparison(defaultRules);
-
 export function initFiltering(elements) {
-  // @todo: #4.1 — заполнить выпадающие списки опциями
   const updateIndexes = (elements, indexes) => {
     Object.keys(indexes).forEach((elementName) => {
       elements[elementName].append(
@@ -19,7 +13,6 @@ export function initFiltering(elements) {
   };
 
   const applyFiltering = (query, state, action) => {
-    // @todo: #4.2 — обработать очистку поля
     if (action && action.name === "clear") {
       const actionParent = action.parentElement;
       const actionInput = actionParent.querySelector("input");
