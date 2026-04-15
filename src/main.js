@@ -50,6 +50,9 @@ async function render(action) {
   //result = applyPagination(result, state, action);
 
   query = applyPagination(query, state, action);
+  query = applyFiltering(query, state, action);
+  query = applySearching(query, state, action);
+  query = applySorting(query, state, action)
 
   const { total, items } = await api.getRecords(query); //new
 
@@ -87,9 +90,9 @@ const applySorting = initSorting([
   sampleTable.header.elements.sortByTotal,
 ]);
 
-//const applyFiltering = initFiltering(sampleTable.filter.elements, {
-//    searchBySeller: indexes.sellers
-//});
+const {applyFiltering, updateIndexes} = initFiltering(sampleTable.filter.elements, indexes => {
+    searchBySeller: indexes.sellers
+});
 
 const applySearching = initSearching("search");
 
@@ -99,6 +102,10 @@ appRoot.appendChild(sampleTable.container);
 async function init() {
   //new
   const indexes = await api.getIndexes();
+
+  updateIndexes(sampleTable.filter.elements, {
+        searchBySeller: indexes.sellers
+    });
 }
 
 //render();
